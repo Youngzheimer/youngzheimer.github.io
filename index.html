@@ -282,7 +282,7 @@
       }
       setStatus("Requesting device...");
       device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: [SERVICE_UUID] }],
+        acceptAllDevices: true,
         optionalServices: [SERVICE_UUID]
       });
       device.addEventListener("gattserverdisconnected", () => {
