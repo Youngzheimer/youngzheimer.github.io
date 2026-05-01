@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>bluecon Config</title>
+  <style>
+    :root {
+      --ink: #0a0b10;
+      --paper: #f7f5f1;
+      --accent: #ff5a1f;
+      --accent-2: #2ec4b6;
+      --shadow: rgba(10, 11, 16, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 10% 10%, rgba(255, 90, 31, 0.12), transparent 60%),
+        radial-gradient(900px 500px at 90% 0%, rgba(46, 196, 182, 0.2), transparent 55%),
+        linear-gradient(180deg, #fffaf3 0%, #f0ede6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px 60px;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      display: grid;
+      gap: 24px;
+    }
+
+    header {
+      background: var(--paper);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 18px 45px var(--shadow);
+    }
+
+    header h1 {
+      margin: 0 0 8px 0;
+      font-size: clamp(1.8rem, 2vw + 1.4rem, 2.6rem);
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 0;
+      color: rgba(10, 11, 16, 0.7);
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .card {
+      background: var(--paper);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 14px 40px var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40% -60% auto;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(46, 196, 182, 0.15), transparent 70%);
+      transform: rotate(12deg);
+    }
+
+    .card h2 {
+      margin: 0 0 12px 0;
+      font-size: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 10px 0 6px 0;
+      font-size: 0.92rem;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(10, 11, 16, 0.15);
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: var(--ink);
+      color: white;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(10, 11, 16, 0.2);
+    }
+
+    button.secondary {
+      background: var(--accent);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(46, 196, 182, 0.08);
+      border: 1px solid rgba(46, 196, 182, 0.3);
+      font-size: 0.92rem;
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: rgba(10, 11, 16, 0.65);
+    }
+
+    .inline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>bluecon BLE Config</h1>
+      <p>Connect over Web Bluetooth and set per-pin HID or MIDI actions.</p>
+    </header>
+
+    <section class="card">
+      <h2>Connection</h2>
+      <div class="actions">
+        <button id="connectBtn">Connect</button>
+        <button id="loadBtn" class="secondary">Load Config</button>
+        <button id="saveBtn">Save Config</button>
+      </div>
+      <p id="status" class="status">Not connected.</p>
+      <p class="note">Tip: Use Chrome or Edge on desktop. BLE requires HTTPS or localhost.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>GPIO2</h2>
+        <label for="profile0">Profile</label>
+        <select id="profile0">
+          <option value="0">HID Keyboard</option>
+          <option value="1">MIDI</option>
+        </select>
+
+        <label for="hidKey0">HID Key (usage ID, decimal)</label>
+        <input id="hidKey0" type="number" min="0" max="255" value="80" />
+        <p class="note">Arrow left = 80, right = 79, up = 82, down = 81.</p>
+
+        <label>MIDI</label>
+        <div class="inline">
+          <input id="midiNote0" type="number" min="0" max="127" value="60" placeholder="Note" />
+          <input id="midiVel0" type="number" min="0" max="127" value="100" placeholder="Velocity" />
+          <input id="midiCh0" type="number" min="1" max="16" value="1" placeholder="Channel" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>GPIO3</h2>
+        <label for="profile1">Profile</label>
+        <select id="profile1">
+          <option value="0">HID Keyboard</option>
+          <option value="1">MIDI</option>
+        </select>
+
+        <label for="hidKey1">HID Key (usage ID, decimal)</label>
+        <input id="hidKey1" type="number" min="0" max="255" value="79" />
+        <p class="note">Arrow left = 80, right = 79, up = 82, down = 81.</p>
+
+        <label>MIDI</label>
+        <div class="inline">
+          <input id="midiNote1" type="number" min="0" max="127" value="62" placeholder="Note" />
+          <input id="midiVel1" type="number" min="0" max="127" value="100" placeholder="Velocity" />
+          <input id="midiCh1" type="number" min="1" max="16" value="1" placeholder="Channel" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SERVICE_UUID = "c3a00001-8f9b-4f04-9f52-0c2b5b2d3a01";
+    const CHAR_UUID = "c3a00002-8f9b-4f04-9f52-0c2b5b2d3a01";
+    const CONFIG_LEN = 11;
+    const CONFIG_VERSION = 1;
+
+    let device = null;
+    let server = null;
+    let configChar = null;
+
+    const statusEl = document.getElementById("status");
+    const connectBtn = document.getElementById("connectBtn");
+    const loadBtn = document.getElementById("loadBtn");
+    const saveBtn = document.getElementById("saveBtn");
+
+    const fields = {
+      profile0: document.getElementById("profile0"),
+      profile1: document.getElementById("profile1"),
+      hidKey0: document.getElementById("hidKey0"),
+      hidKey1: document.getElementById("hidKey1"),
+      midiNote0: document.getElementById("midiNote0"),
+      midiNote1: document.getElementById("midiNote1"),
+      midiVel0: document.getElementById("midiVel0"),
+      midiVel1: document.getElementById("midiVel1"),
+      midiCh0: document.getElementById("midiCh0"),
+      midiCh1: document.getElementById("midiCh1")
+    };
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function decodeConfig(buffer) {
+      const view = new DataView(buffer);
+      if (view.byteLength !== CONFIG_LEN) {
+        throw new Error("Unexpected config size");
+      }
+      const version = view.getUint8(0);
+      if (version !== CONFIG_VERSION) {
+        throw new Error("Unsupported config version");
+      }
+      fields.profile0.value = view.getUint8(1);
+      fields.profile1.value = view.getUint8(2);
+      fields.hidKey0.value = view.getUint8(3);
+      fields.hidKey1.value = view.getUint8(4);
+      fields.midiNote0.value = view.getUint8(5);
+      fields.midiNote1.value = view.getUint8(6);
+      fields.midiVel0.value = view.getUint8(7);
+      fields.midiVel1.value = view.getUint8(8);
+      fields.midiCh0.value = view.getUint8(9);
+      fields.midiCh1.value = view.getUint8(10);
+    }
+
+    function encodeConfig() {
+      const buffer = new ArrayBuffer(CONFIG_LEN);
+      const view = new DataView(buffer);
+      view.setUint8(0, CONFIG_VERSION);
+      view.setUint8(1, Number(fields.profile0.value));
+      view.setUint8(2, Number(fields.profile1.value));
+      view.setUint8(3, Number(fields.hidKey0.value));
+      view.setUint8(4, Number(fields.hidKey1.value));
+      view.setUint8(5, Number(fields.midiNote0.value));
+      view.setUint8(6, Number(fields.midiNote1.value));
+      view.setUint8(7, Number(fields.midiVel0.value));
+      view.setUint8(8, Number(fields.midiVel1.value));
+      view.setUint8(9, Number(fields.midiCh0.value));
+      view.setUint8(10, Number(fields.midiCh1.value));
+      return buffer;
+    }
+
+    async function connect() {
+      if (!navigator.bluetooth) {
+        setStatus("Web Bluetooth not supported in this browser.");
+        return;
+      }
+      setStatus("Requesting device...");
+      device = await navigator.bluetooth.requestDevice({
+        filters: [{ services: [SERVICE_UUID] }],
+        optionalServices: [SERVICE_UUID]
+      });
+      device.addEventListener("gattserverdisconnected", () => {
+        setStatus("Disconnected.");
+        server = null;
+        configChar = null;
+      });
+
+      setStatus("Connecting...");
+      server = await device.gatt.connect();
+      const service = await server.getPrimaryService(SERVICE_UUID);
+      configChar = await service.getCharacteristic(CHAR_UUID);
+      setStatus("Connected to " + device.name);
+    }
+
+    async function loadConfig() {
+      if (!configChar) {
+        setStatus("Not connected.");
+        return;
+      }
+      const value = await configChar.readValue();
+      decodeConfig(value.buffer);
+      setStatus("Config loaded.");
+    }
+
+    async function saveConfig() {
+      if (!configChar) {
+        setStatus("Not connected.");
+        return;
+      }
+      const buffer = encodeConfig();
+      await configChar.writeValue(buffer);
+      setStatus("Config saved.");
+    }
+
+    connectBtn.addEventListener("click", () => connect().catch(err => setStatus(err.message)));
+    loadBtn.addEventListener("click", () => loadConfig().catch(err => setStatus(err.message)));
+    saveBtn.addEventListener("click", () => saveConfig().catch(err => setStatus(err.message)));
+  </script>
+</body>
+</html>
